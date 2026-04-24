@@ -19,8 +19,8 @@ class Sistema_gestion_cliente(Sistema_gestion_general):
     def mostrar_clientes(self):
         for cliente in self.clientes:
             print(cliente)
-
-class reservacion:
+# Clase para la gestión de reservaciones de salas
+class reservacion_sala:
     def __init__(self, cliente, fecha, hora):
         self.cliente = cliente
         self.fecha = fecha
@@ -29,3 +29,24 @@ class reservacion:
     def calcular_hora_reservacion(self):
         # Lógica para calcular la hora de reservación
         return f"{self.fecha} a las {self.hora}"
+#clase para la gestios de alquiler de equipos
+class alquiler_equipo:
+    def __init__(self, cliente, equipo, fecha):
+        self.cliente = cliente
+        self.equipo = equipo
+        self.fecha = fecha
+        
+    def calcular_costo_alquiler(self):
+        # Lógica para calcular el costo del alquiler
+        return f"El costo del alquiler de {self.equipo} para {self.cliente} el {self.fecha} es: $100"
+#Clase para asesorias especializadas
+class asesorias_especializadas:
+    def __init__(self, cliente, tema, fecha):
+        self.cliente = cliente
+        self.tema = tema
+        self.fecha = fecha
+        
+    def calcular_costo_asesoria(self):
+        # Lógica para calcular el costo de la asesoría
+        return f"El costo de la asesoría sobre {self.tema} para {self.cliente} el {self.fecha} es: $200"
+    
