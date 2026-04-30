@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 # configuracion de logs
 logging.basicConfig(
     filename='software_fj.log', 
-    level=logging.INFO,
+    level=logging.info,
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 
