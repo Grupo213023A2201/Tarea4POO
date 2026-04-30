@@ -1,0 +1,160 @@
+from abc import ABC, abstractmethod
+import datetime
+
+# ==========================
+# LOGS
+# ==========================
+def registrar_log(mensaje):
+    with open("logs.txt", "a") as archivo:
+        archivo.write(f"{datetime.datetime.now()} - {mensaje}\n")
+
+
+# ==========================
+# EXCEPCIONES PERSONALIZADAS
+# ==========================
+class ClienteError(Exception):
+    pass
+
+class ServicioError(Exception):
+    pass
+
+class ReservaError(Exception):
+    pass
+
+
+# ==========================
+# CLASE ABSTRACTA
+# ==========================
+class Entidad(ABC):
+    def __init__(self, nombre):
+        self._nombre = nombre
+
+    @abstractmethod
+    def mostrar_info(self):
+        pass
+
+
+# ==========================
+# CLIENTE
+# ==========================
+class Cliente(Entidad):
+    def __init__(self, nombre, email):
+        super().__init__(nombre)
+        self._email = email
+
+    def mostrar_info(self):
+        return f"Cliente: {self._nombre} - Email: {self._email}"
+
+    def validar(self):
+        if "@" not in self._email:
+            raise ClienteError("Email inválido")
+
+
+# ==========================
+# SERVICIO ABSTRACTO
+# ==========================
+class Servicio(ABC):
+    def __init__(self, nombre, precio_base):
+        self.nombre = nombre
+        self.precio_base = precio_base
+
+    @abstractmethod
+    def calcular_costo(self):
+        pass
+
+
+# ==========================
+# SERVICIOS (HERENCIA + POLIMORFISMO)
+# ==========================
+class Sala(Servicio):
+    def calcular_costo(self, horas=1):
+        return self.precio_base * horas
+
+
+class Equipo(Servicio):
+    def calcular_costo(self, dias=1):
+        return self.precio_base * dias
+
+
+class Asesoria(Servicio):
+    def calcular_costo(self, horas=1):
+        return self.precio_base * horas * 1.2  # recargo
+
+
+# ==========================
+# RESERVA
+# ==========================
+class Reserva:
+    def __init__(self, cliente, servicio, duracion):
+        self.cliente = cliente
+        self.servicio = servicio
+        self.duracion = duracion
+        self.estado = "Pendiente"
+
+    def confirmar(self):
+        try:
+            self.cliente.validar()
+            costo = self.servicio.calcular_costo(self.duracion)
+            self.estado = "Confirmada"
+            return f"Reserva confirmada. Costo: ${costo}"
+        
+        except Exception as e:
+            registrar_log(str(e))
+            self.estado = "Error"
+            return "Error al confirmar reserva"
+
+    def cancelar(self):
+        self.estado = "Cancelada"
+        return "Reserva cancelada"
+
+
+# ==========================
+# SISTEMA
+# ==========================
+class Sistema:
+    def __init__(self):
+        self.clientes = []
+        self.reservas = []
+
+    def agregar_cliente(self, cliente):
+        try:
+            cliente.validar()
+            self.clientes.append(cliente)
+        except ClienteError as e:
+            registrar_log(str(e))
+
+    def crear_reserva(self, cliente, servicio, duracion):
+        try:
+            reserva = Reserva(cliente, servicio, duracion)
+            resultado = reserva.confirmar()
+            self.reservas.append(reserva)
+            print(resultado)
+
+        except Exception as e:
+            registrar_log(str(e))
+
+
+# ==========================
+# PRUEBAS (10 OPERACIONES)
+# ==========================
+sistema = Sistema()
+
+# Clientes
+c1 = Cliente("Juan", "juan@email.com")
+c2 = Cliente("Maria", "correo_invalido")  # ERROR
+
+sistema.agregar_cliente(c1)
+sistema.agregar_cliente(c2)
+
+# Servicios
+sala = Sala("Sala VIP", 50)
+equipo = Equipo("Proyector", 30)
+asesoria = Asesoria("Consultoría", 100)
+
+# Reservas
+sistema.crear_reserva(c1, sala, 2)
+sistema.crear_reserva(c1, equipo, 3)
+sistema.crear_reserva(c1, asesoria, 1)
+
+# Reserva con error
+sistema.crear_reserva(c2, sala, 2)
