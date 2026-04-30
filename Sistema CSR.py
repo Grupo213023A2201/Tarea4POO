@@ -1,3 +1,21 @@
+import logging
+from abc import ABC, abstractmethod
+
+# configuracion de logs
+logging.basicConfig(
+    filename='software_fj.log', 
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+
+# excepciones personalizadas
+class SoftwareFJError(Exception):
+    """Clase base para excepciones del sistema."""
+    pass
+
+class ValidacionError(SoftwareFJError):
+    """Excepción para datos inválidos o faltantes."""
+    pass
 
 #Clase abstracta para entidades
 class Sistema_gestion_general:
