@@ -38,16 +38,24 @@ class Entidad(ABC):
 # CLIENTE
 # ==========================
 class Cliente(Entidad):
-    def __init__(self, nombre, email):
+    def __init__(self, nombre, documento, email):
         super().__init__(nombre)
-        self._email = email
+        self.__documento = documento
+        self.__email = email
 
     def mostrar_info(self):
-        return f"Cliente: {self._nombre} - Email: {self._email}"
+        return f"Cliente: {self._nombre} - Documento: {self.__documento}"
 
     def validar(self):
-        if "@" not in self._email:
+        if not self._nombre.replace(" ", "").isalpha():
+            raise ClienteError("Nombre inválido")
+        if len(self.__documento) < 5:
+            raise ClienteError("Documento inválido")
+        if "@" not in self.__email:
             raise ClienteError("Email inválido")
+
+    def get_documento(self):
+        return self.__documento
 
 
 # ==========================
