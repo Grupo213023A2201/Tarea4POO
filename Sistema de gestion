@@ -67,7 +67,7 @@ class Servicio(ABC):
         self.precio_base = precio_base
 
     @abstractmethod
-    def calcular_costo(self):
+    def calcular_costo(self, tiempo, impuesto=0, descuento=0):
         pass
 
 
