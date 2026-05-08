@@ -28,13 +28,6 @@ El sistema permite:
 4. Controlar errores mediante excepciones
 5. Registrar eventos en archivo logs.txt
 
-## Pruebas realizadas
-
-Se ejecutan 10 operaciones donde:
-
-- 3 reservas se realizan correctamente
-- 1 reserva genera error intencional para demostrar el manejo de excepciones
-
 ## Autores
 
 - Danna Lizeth Ramirez Cepeda
