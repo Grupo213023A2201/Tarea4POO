@@ -102,17 +102,20 @@ class Reserva:
         self.duracion = duracion
         self.estado = "Pendiente"
 
-    def confirmar(self):
-        try:
-            self.cliente.validar()
-            costo = self.servicio.calcular_costo(self.duracion)
-            self.estado = "Confirmada"
-            return f"Reserva confirmada. Costo: ${costo}"
-        
-        except Exception as e:
-            registrar_log(str(e))
-            self.estado = "Error"
-            return "Error al confirmar reserva"
+def procesar(self):
+    try:
+        self.cliente.validar()
+        costo = self.servicio.calcular_costo(self.duracion, impuesto=0.19, descuento=10)
+        self.estado = "Confirmada"
+        return f"Reserva confirmada. Costo final: ${costo}"
+
+    except Exception as e:
+        registrar_log(str(e))
+        self.estado = "Error"
+        raise ReservaError("Fallo al procesar reserva") from e
+
+    finally:
+        registrar_log(f"Reserva procesada con estado: {self.estado}")
 
     def cancelar(self):
         self.estado = "Cancelada"
@@ -162,10 +165,19 @@ sala = Sala("Sala VIP", 50)
 equipo = Equipo("Proyector", 30)
 asesoria = Asesoria("Consultoría", 100)
 
-# Reservas
-sistema.crear_reserva(c1, sala, 2)
-sistema.crear_reserva(c1, equipo, 3)
-sistema.crear_reserva(c1, asesoria, 1)
+# ==========================
+# RESERVAS
+# ==========================
+
+r1 = Reserva(c1, sala, 2)
+print(r1.procesar())
+
+r2 = Reserva(c1, equipo, 3)
+print(r2.procesar())
+
+r3 = Reserva(c1, asesoria, 1)
+print(r3.procesar())
 
 # Reserva con error
-sistema.crear_reserva(c2, sala, 2)
+r4 = Reserva(c2, sala, 2)
+print(r4.procesar())
