@@ -75,18 +75,21 @@ class Servicio(ABC):
 # SERVICIOS (HERENCIA + POLIMORFISMO)
 # ==========================
 class Sala(Servicio):
-    def calcular_costo(self, horas=1):
-        return self.precio_base * horas
+    def calcular_costo(self, tiempo, impuesto=0, descuento=0):
+        base = self.precio_base * tiempo
+        return base + (base * impuesto) - descuento
 
 
 class Equipo(Servicio):
-    def calcular_costo(self, dias=1):
-        return self.precio_base * dias
+    def calcular_costo(self, tiempo, impuesto=0, descuento=0):
+        base = self.precio_base * tiempo
+        return base + (base * impuesto) - descuento
 
 
 class Asesoria(Servicio):
-    def calcular_costo(self, horas=1):
-        return self.precio_base * horas * 1.2  # recargo
+    def calcular_costo(self, tiempo, impuesto=0, descuento=0):
+        base = self.precio_base * tiempo * 1.2
+        return base + (base * impuesto) - descuento
 
 
 # ==========================
@@ -148,8 +151,8 @@ class Sistema:
 sistema = Sistema()
 
 # Clientes
-c1 = Cliente("Juan", "juan@email.com")
-c2 = Cliente("Maria", "correo_invalido")  # ERROR
+c1 = Cliente("Juan", "123456789", "juan@email.com")
+c2 = Cliente("Maria", "987654321", "correo_invalido")  # ERROR
 
 sistema.agregar_cliente(c1)
 sistema.agregar_cliente(c2)
