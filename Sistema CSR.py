@@ -18,9 +18,13 @@ class ValidacionError(SoftwareFJError):
     pass
 
 #Clase abstracta para entidades
-class Sistema_gestion_general:
+class Sistema_gestion_general(ABC):
     def __init__(self, nombre):
-        self.nombre = nombre
+        self._nombre = nombre
+
+    @abstractmethod
+    def mostrar_info(self):
+        pass
  
 class Sistema_gestion_cliente(Sistema_gestion_general):
     def __init__(self, nombre):
