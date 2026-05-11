@@ -38,7 +38,7 @@ class Sistema_gestion_cliente(Sistema_gestion_general):
         for cliente in self.clientes:
             print(cliente)
 # Clase para la gestión de reservaciones de salas
-class reservacion_sala:
+class reservacion_sala (Servicio):
     def __init__(self, cliente, fecha, hora):
         self.cliente = cliente
         self.fecha = fecha
@@ -46,25 +46,33 @@ class reservacion_sala:
         
     def calcular_hora_reservacion(self):
         # Lógica para calcular la hora de reservación
+      
         return f"{self.fecha} a las {self.hora}"
-#clase para la gestios de alquiler de equipos
-class alquiler_equipo:
-    def __init__(self, cliente, equipo, fecha):
+        calcular_costo(self, tiempo, impuesto=19, descuento=0).
+    #clase para la gestios de alquiler de equipos
+class alquiler_equipo(Servicio):
+    def __init__(self, cliente, equipo, fecha, precio_base=100):
+        super().__init__(f"Alquiler de {equipo}", precio_base)
         self.cliente = cliente
         self.equipo = equipo
         self.fecha = fecha
-        
-    def calcular_costo_alquiler(self):
-        # Lógica para calcular el costo del alquiler
-        return f"El costo del alquiler de {self.equipo} para {self.cliente} el {self.fecha} es: $100"
-#Clase para asesorias especializadas
-class asesorias_especializadas:
-    def __init__(self, cliente, tema, fecha):
+
+    def calcular_costo(self, tiempo, impuesto=19, descuento=0):
+        # Lógica real de calculo (Sobrecarga)
+        subtotal = self.precio_base * tiempo
+        total = subtotal + (subtotal * impuesto / 100) - (subtotal * descuento / 100)
+        return total
+
+# Clase para asesorias especializadas
+class asesorias_especializadas(Servicio):
+    def __init__(self, cliente, tema, fecha, precio_base=200):
+        super().__init__(f"Asesoría: {tema}", precio_base)
         self.cliente = cliente
         self.tema = tema
         self.fecha = fecha
-        
-    def calcular_costo_asesoria(self):
-        # Lógica para calcular el costo de la asesoría
-        return f"El costo de la asesoría sobre {self.tema} para {self.cliente} el {self.fecha} es: $200"
-    
+
+    def calcular_costo(self, tiempo, impuesto=0, descuento=0):
+        # Las asesorías suelen tener un recargo del 20% por especialista
+        recargo = 1.20
+        total = (self.precio_base * tiempo * recargo) - descuento
+        return total
