@@ -75,18 +75,21 @@ class Servicio(ABC):
 # SERVICIOS (HERENCIA + POLIMORFISMO)
 # ==========================
 class Sala(Servicio):
-    def calcular_costo(self, horas=1):
-        return self.precio_base * horas
+    def calcular_costo(self, tiempo, impuesto=0, descuento=0):
+        base = self.precio_base * tiempo
+        return base + (base * impuesto) - descuento
 
 
 class Equipo(Servicio):
-    def calcular_costo(self, dias=1):
-        return self.precio_base * dias
+    def calcular_costo(self, tiempo, impuesto=0, descuento=0):
+        base = self.precio_base * tiempo
+        return base + (base * impuesto) - descuento
 
 
 class Asesoria(Servicio):
-    def calcular_costo(self, horas=1):
-        return self.precio_base * horas * 1.2  # recargo
+    def calcular_costo(self, tiempo, impuesto=0, descuento=0):
+        base = self.precio_base * tiempo * 1.2
+        return base + (base * impuesto) - descuento
 
 
 # ==========================
@@ -99,17 +102,20 @@ class Reserva:
         self.duracion = duracion
         self.estado = "Pendiente"
 
-    def confirmar(self):
-        try:
-            self.cliente.validar()
-            costo = self.servicio.calcular_costo(self.duracion)
-            self.estado = "Confirmada"
-            return f"Reserva confirmada. Costo: ${costo}"
-        
-        except Exception as e:
-            registrar_log(str(e))
-            self.estado = "Error"
-            return "Error al confirmar reserva"
+def procesar(self):
+    try:
+        self.cliente.validar()
+        costo = self.servicio.calcular_costo(self.duracion, impuesto=0.19, descuento=10)
+        self.estado = "Confirmada"
+        return f"Reserva confirmada. Costo final: ${costo}"
+
+    except Exception as e:
+        registrar_log(str(e))
+        self.estado = "Error"
+        raise ReservaError("Fallo al procesar reserva") from e
+
+    finally:
+        registrar_log(f"Reserva procesada con estado: {self.estado}")
 
     def cancelar(self):
         self.estado = "Cancelada"
@@ -148,8 +154,8 @@ class Sistema:
 sistema = Sistema()
 
 # Clientes
-c1 = Cliente("Juan", "juan@email.com")
-c2 = Cliente("Maria", "correo_invalido")  # ERROR
+c1 = Cliente("Juan", "123456789", "juan@email.com")
+c2 = Cliente("Maria", "987654321", "correo_invalido")  # ERROR
 
 sistema.agregar_cliente(c1)
 sistema.agregar_cliente(c2)
@@ -159,10 +165,19 @@ sala = Sala("Sala VIP", 50)
 equipo = Equipo("Proyector", 30)
 asesoria = Asesoria("Consultoría", 100)
 
-# Reservas
-sistema.crear_reserva(c1, sala, 2)
-sistema.crear_reserva(c1, equipo, 3)
-sistema.crear_reserva(c1, asesoria, 1)
+# ==========================
+# RESERVAS
+# ==========================
+
+r1 = Reserva(c1, sala, 2)
+print(r1.procesar())
+
+r2 = Reserva(c1, equipo, 3)
+print(r2.procesar())
+
+r3 = Reserva(c1, asesoria, 1)
+print(r3.procesar())
 
 # Reserva con error
-sistema.crear_reserva(c2, sala, 2)
+r4 = Reserva(c2, sala, 2)
+print(r4.procesar())
