@@ -38,8 +38,17 @@ class Sistema_gestion_cliente(Sistema_gestion_general):
         for cliente in self.clientes:
             print(cliente)
 # Clase para la gestión de reservaciones de salas
+class Servicio(ABC):
+    def __init__(self, nombre, precio_base): #Realice correcion en el constructor de la clase Servicio para incluir el precio base
+        self.nombre = nombre
+        self.precio_base = precio_base
+
+    @abstractmethod
+    def calcular_costo(self, tiempo, impuesto=0, descuento=0):
+        pass
 class reservacion_sala (Servicio):
-    def __init__(self, cliente, fecha, hora):
+    def __init__(self, cliente, fecha, hora, precio_base=50):
+        super().__init__("Reservación de Sala", precio_base) # Precio base para reservación de sala
         self.cliente = cliente
         self.fecha = fecha
         self.hora = hora
@@ -48,7 +57,13 @@ class reservacion_sala (Servicio):
         # Lógica para calcular la hora de reservación
       
         return f"{self.fecha} a las {self.hora}"
-        calcular_costo(self, tiempo, impuesto=19, descuento=0).
+    
+    def calcular_costo(self, tiempo, impuesto=19, descuento=0):
+        # Lógica real de calculo (Sobrecarga)
+        subtotal = self.precio_base * tiempo
+        total = subtotal + (subtotal * impuesto / 100) - (subtotal * descuento /100)
+        return total
+        
     #clase para la gestios de alquiler de equipos
 class alquiler_equipo(Servicio):
     def __init__(self, cliente, equipo, fecha, precio_base=100):
@@ -69,6 +84,7 @@ class asesorias_especializadas(Servicio):
         super().__init__(f"Asesoría: {tema}", precio_base)
         self.cliente = cliente
         self.tema = tema
+        
         self.fecha = fecha
 
     def calcular_costo(self, tiempo, impuesto=0, descuento=0):
@@ -76,3 +92,22 @@ class asesorias_especializadas(Servicio):
         recargo = 1.20
         total = (self.precio_base * tiempo * recargo) - descuento
         return total
+    if __name__ == "__main__": #Realice correcion en la indentacion del bloque principal para asegurar su correcta ejecución
+        sistema_cliente = Sistema_gestion_cliente("Gestión de Clientes")
+        sistema_cliente.agregar_cliente("Empresa XYZ")
+        sistema_cliente.agregar_cliente("Empresa ABC")
+        print("Clientes registrados:")
+        
+        sistema_cliente.mostrar_clientes()
+        reservacion = reservacion_sala("Empresa XYZ", "2024-07-01", "10:00")
+        costo_reservacion = reservacion.calcular_costo(tiempo=2, impuesto=19, descuento=10)
+        print(f"Costo de la reservación: ${costo_reservacion:.2f}")
+        
+        alquiler = alquiler_equipo("Empresa ABC", "Proyector", "2024-07-02")
+        costo_alquiler = alquiler.calcular_costo(tiempo=3, impuesto=19, descuento=15)
+        print(f"Costo del alquiler: ${costo_alquiler:.2f}")
+        
+      
+        
+        print("\nASESORÍA")
+        
