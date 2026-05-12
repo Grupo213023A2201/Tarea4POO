@@ -238,5 +238,4 @@ if __name__ == "__main__":
     print(
         f"Costo de la asesoría: ${costo_asesoria:.2f}"
     )
-    )
-        
+           
